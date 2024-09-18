@@ -1,0 +1,31 @@
+server:
+  port: 8081
+resilience4j.circuitbreaker:
+  instances:
+    micro_a:
+      registerHealthIndicator: true # This enables health indicators for this circuit breaker. It will be registered with Spring Boot Actuator, allowing you to monitor the circuit breaker’s health and status via Actuator endpoints (like /actuator/health)
+      slidingWindowSize: 5 # The last 5 requests are considered for failure calculation
+      minimumNumberOfCalls: 3 #The Circuit Breaker will only evaluate after 3 requests have been made.
+      failureRateThreshold: 50 #If more than 50% of the last 5 requests fail (i.e., 3 out of 5), the Circuit Breaker will open.
+      waitDurationInOpenState: 10s #The Circuit Breaker will remain open for 10 seconds before moving to the half-open state.
+      permittedNumberOfCallsInHalfOpenState: 3 #3 test requests are allowed in the half-open state to check if the service has recovered. If successful, it will close the Circuit Breaker; otherwise, it will open again.
+
+#  retry:
+#    instances:
+#      ResilienceProject1:
+#        maxAttempts: 3
+#        waitDuration: 500ms
+#        retryExceptions:
+#          - java.io.IOException
+#          - java.util.concurrent.TimeoutException
+#  bulkhead:
+#    instances:
+#      ResilienceProject1:
+#        maxConcurrentCalls: 10
+#        maxWaitDuration: 0ms
+#  ratelimiter:
+#    instances:
+#      ResilienceProject1:
+#        limitForPeriod: 10
+#        limitRefreshPeriod: 500ms
+#        timeoutDuration: 1000ms
